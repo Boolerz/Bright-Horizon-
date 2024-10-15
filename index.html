@@ -229,12 +229,12 @@
         container.innerHTML = ''; // Clear the current content
 
         if (page === 'home') {
-            container.innerHTML = `<h2>Welcome to Brigh Horizon Academy!</h2>`;
-        } else if (page === 'students' ) {
+            container.innerHTML = `<h2>Welcome to Bright Horizon Academy!</h2>`;
+        } else if (page === 'students') {
             container.innerHTML = `<h2>Students page. This page is still under development. Please check back later.</h2>`;
-        } else if (page === 'teachers' ) {
+        } else if (page === 'teachers') {
             container.innerHTML = `<h2>Teacher's page, This page is still under development. Please check back later.</h2>`;
-        } else if (page === 'classes' ) {
+        } else if (page === 'classes') {
             container.innerHTML = `<h2>Classes page, This page is still under development. Please check back later.</h2>`;
         } else if (page === 'exams') {
             // Display subtitles for exam section
@@ -293,9 +293,66 @@
                 </div>
             `;
         } else if (page === 'createExam') {
-            container.innerHTML = `<h2>Create Exam Page</h2><p>This feature is not yet implemented.</p>`;
+            container.innerHTML = `
+                <h2>Create Exam</h2>
+                <div class="form-section">
+                    <form id="create-exam-form">
+                        <label for="examTitle">Exam Title:</label>
+                        <input type="text" id="examTitle" placeholder="Enter Exam Title" required>
+
+                        <label for="term">Term:</label>
+                        <select id="term" required>
+                            <option value="">Select Term</option>
+                            <option value="Term 1">Term 1</option>
+                            <option value="Term 2">Term 2</option>
+                            <option value="Term 3">Term 3</option>
+                        </select>
+
+                        <label for="class">Class:</label>
+                        <select id="examClass" required>
+                            <option value="">Select Class</option>
+                            <option value="Form 1">Form 1</option>
+                            <option value="Form 2">Form 2</option>
+                            <option value="Form 3">Form 3</option>
+                            <option value="Form 4">Form 4</option>
+                        </select>
+
+                        <label for="examDate">Exam Date:</label>
+                        <input type="date" id="examDate" required>
+
+                        <button type="button" onclick="createExam()">Create Exam</button>
+                    </form>
+                </div>
+            `;
         } else if (page === 'manageExam') {
-            container.innerHTML = `<h2>Manage Exam Page</h2><p>This feature is not yet implemented.</p>`;
+            container.innerHTML = `
+                <h2>Manage Exam Reports</h2>
+                <div class="form-section">
+                    <form id="report-form">
+                        <label for="reportClass">Class:</label>
+                        <select id="reportClass" required>
+                            <option value="">Select Class</option>
+                            <option value="Form 1">Form 1</option>
+                            <option value="Form 2">Form 2</option>
+                            <option value="Form 3">Form 3</option>
+                            <option value="Form 4">Form 4</option>
+                        </select>
+
+                        <label for="term">Term:</label>
+                        <select id="term" required>
+                            <option value="">Select Term</option>
+                            <option value="Term 1">Term 1</option>
+                            <option value="Term 2">Term 2</option>
+                            <option value="Term 3">Term 3</option>
+                        </select>
+
+                        <label for="admissionNumber">Admission Number:</label>
+                        <input type="text" id="admissionNumber" placeholder="Enter Admission Number" required>
+
+                        <button type="button" onclick="downloadReport()">Download Report Form</button>
+                    </form>
+                </div>
+            `;
         }
     }
 
@@ -340,6 +397,28 @@
         console.log("Student Marks:", studentMarks);
 
         // Here you would typically send this data to the server
+    }
+
+    // Function to create an exam
+    function createExam() {
+        const examTitle = document.getElementById('examTitle').value;
+        const term = document.getElementById('term').value;
+        const examClass = document.getElementById('examClass').value;
+        const examDate = document.getElementById('examDate').value;
+
+        if (!examTitle || !term || !examClass || !examDate) {
+            alert('Please fill out all the fields.');
+            return;
+        }
+
+        // This is where you would handle the backend logic to create the exam
+        alert(`Creating exam:
+        Title: ${examTitle}
+        Term: ${term}
+        Class: ${examClass}
+        Date: ${examDate}`);
+
+        // You can add backend logic here for exam creation later.
     }
 
     // Initial navigation to home
