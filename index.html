@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management System</title>
+    <style>
+        /* General body styling */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header styling */
+        header {
+            background-color: #003366;
+            color: white;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between; /* Make space between title and icons */
+            align-items: center;
+            padding-right: 20px; /* Adjust spacing */
+            box-sizing: border-box;
+        }
+
+        /* Logo and title styling */
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1010; /* Ensure it's above the nav */
+            position: absolute; /* Change to absolute positioning */
+            left: 15px; /* Adjust based on your padding */
+            top: 15px; /* Slightly below the top of the header */
+        }
+
+        /* Icon styling */
+        .header-icons {
+            display: flex;
+            align-items: center;
+            position: relative; /* Allow icons to stay on the right */
+            margin-left: auto; /* Push them to the right */
+            font-size: 24px;  /* Icon size */
+            cursor: pointer;
+            color: white;  /* Icon color */
+        }
+
+        .header-icons i:hover {
+            color: #005f99;  /* Change color on hover */
+        }
+
+
+        .header-icons i {
+            margin-right: 15px; /* Add space between each icon */
+        }
+
+        .header-icons img {
+            width: 24px;
+            height: 24px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        /* Navigation bar styling */
+        nav {
+            margin-top: 0;
+            margin-bottom: 70px; /* Ensure there's space for the header */
+            z-index: 1000; /* Keep navigation above other content */
+            position: fixed; /* Make navigation fixed */
+            top: 53px; /* Adjust based on your header height */
+            width: 100%; /* Full width */
+            background-color: #003366; /* Background color to match header */
+            margin-top: 0; /* Ensure there's no extra space */
+            display: flex; /* Use flexbox */
+            justify-content: center; /* Center the nav items */
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: inline-block;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #005f99;
+            border-radius: 4px;
+        }
+
+        /* Marquee container styling */
+        .marquee-container {
+            background-color: #005f99;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            position: fixed;
+            width: 100%;
+            top: 95px; /* Adjust based on your header height */
+            z-index: 999;
+        }
+
+        .marquee-container marquee {
+            display: block;
+        }
+
+        /* Main content styling */
+        main {
+            padding: 100px 20px 20px;
+            text-align: center;
+            width: 80%;
+            margin-top: 70px; /* Add margin to ensure space below header */
+            top: 120px; /* Adjust based on your header height */
+            padding-top: 130px; /* Adjust to provide space below header and marquee */
+            padding-bottom: 20px;
+            margin-top: 0; /* Adjust to reduce any extra space */
+        } 
+
+        h1 {
+            font-size: 28px;
+            color: #003366;
+            margin-bottom: 20px;
+        }
+
+        /* Form section styling */
+        .form-section {
+            background-color: #e6f2ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .form-section select, 
+        .form-section input[type="text"], 
+        .form-section input[type="number"] {
+            padding: 8px;
+            border: 1px solid #003366;
+            border-radius: 4px;
+            margin-right: 10px;
+            width: 150px;
+        }
+
+        /* Buttons */
+        .form-section button {
+            padding: 10px 20px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .form-section button:hover {
+            background-color: #005f99;
+        }
+
+        /* Table for student input */
+        .form-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .form-table th, 
+        .form-table td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .form-table th {
+            background-color: #003366;
+            color: white;
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 8px 10px; /* Reduced padding to minimize footer height */
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            nav a {
+                padding: 10px 15px;
+            }
+
+            main {
+                padding: 140px 10px;
+                width: 95%;
+            }
+
+            .form-section select, 
+            .form-section input[type="text"], 
+            .form-section input[type="number"] {
+                width: 100px;
+            }
+        }
+    </style>
+<script>
+    // Function to navigate between pages
+    function navigateTo(page) {
+        const container = document.getElementById('content'); // Main content container
+        container.innerHTML = ''; // Clear the current content
+
+        if (page === 'home') {
+            container.innerHTML = `<h2>Welcome to Brigh Horizon Academy!</h2>`;
+        } else if (page === 'students' ) {
+            container.innerHTML = `<h2>Students page. This page is still under development. Please check back later.</h2>`;
+        } else if (page === 'teachers' ) {
+            container.innerHTML = `<h2>Teacher's page, This page is still under development. Please check back later.</h2>`;
+        } else if (page === 'classes' ) {
+            container.innerHTML = `<h2>Classes page, This page is still under development. Please check back later.</h2>`;
+        } else if (page === 'exams') {
+            // Display subtitles for exam section
+            container.innerHTML = `
+                <h2>Exam Section</h2>
+                <div class="subtitle">
+                    <a href="#" onclick="navigateTo('enterExam')" class="active">Enter Exam</a>
+                    <a href="#" onclick="navigateTo('createExam')">Create Exam</a>
+                    <a href="#" onclick="navigateTo('manageExam')">Manage Exam</a>
+                </div>
+            `;
+        } else if (page === 'enterExam') {
+            // Show the form for entering marks
+            container.innerHTML = `
+                <h2>Submit Student Marks</h2>
+                <div class="form-section">
+                    <label for="class">Class:</label>
+                    <select id="class" required>
+                        <option value="">Select Class</option>
+                        <option value="Form 1">Form 1</option>
+                        <option value="Form 2">Form 2</option>
+                        <option value="Form 3">Form 3</option>
+                        <option value="Form 4">Form 4</option>
+                    </select>
+
+                    <label for="subject">Subject:</label>
+                    <select id="subject" required>
+                        <option value="">Select Subject</option>
+                        <option value="Maths">Maths</option>
+                        <option value="Eng">Eng</option>
+                        <option value="Kisw">Kisw</option>
+                        <option value="Chem">Chem</option>
+                        <option value="Phy">Phy</option>
+                        <option value="Bio">Bio</option>
+                        <option value="Hist">Hist</option>
+                        <option value="Geo">Geo</option>
+                        <option value="C.R.E">C.R.E</option>
+                        <option value="I.R.E">I.R.E</option>
+                        <option value="Agr">Agr</option>
+                        <option value="B.std">B.std</option>
+                    </select>
+
+                    <div class="form-section">
+                        <h3>Enter Marks</h3>
+                        <table class="form-table" id="studentTable">
+                            <tr>
+                                <th>Admission Number</th>
+                                <th>Marks</th>
+                                <th>Actions</th>
+                            </tr>
+                            <!-- Student rows will be dynamically added here -->
+                        </table>
+                        <button type="button" onclick="addStudentRow()">Add Student</button>
+                        <button type="button" onclick="submitForm()">Submit Marks</button>
+                    </div>
+                </div>
+            `;
+        } else if (page === 'createExam') {
+            container.innerHTML = `<h2>Create Exam Page</h2><p>This feature is not yet implemented.</p>`;
+        } else if (page === 'manageExam') {
+            container.innerHTML = `<h2>Manage Exam Page</h2><p>This feature is not yet implemented.</p>`;
+        }
+    }
+
+    // Function to add a new student row
+    function addStudentRow() {
+        const table = document.getElementById('studentTable');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="text" placeholder="Admission Number" required /></td>
+            <td><input type="number" placeholder="Marks" required /></td>
+            <td><button type="button" onclick="removeStudentRow(this)">Remove</button></td>
+        `;
+        table.appendChild(row);
+    }
+
+    // Function to remove a student row
+    function removeStudentRow(button) {
+        const row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+
+    // Function to submit the form
+    function submitForm() {
+        // Get class and subject values
+        const className = document.getElementById('class').value;
+        const subjectName = document.getElementById('subject').value;
+
+        // Get student marks
+        const table = document.getElementById('studentTable');
+        const rows = table.getElementsByTagName('tr');
+        const studentMarks = [];
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            const admissionNumber = cells[0].getElementsByTagName('input')[0].value;
+            const marks = cells[1].getElementsByTagName('input')[0].value;
+            studentMarks.push({ admissionNumber, marks });
+        }
+
+        console.log("Class:", className);
+        console.log("Subject:", subjectName);
+        console.log("Student Marks:", studentMarks);
+
+        // Here you would typically send this data to the server
+    }
+
+    // Initial navigation to home
+    window.onload = () => navigateTo('home');
+</script>
+</head>
+<body>
+<header>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <div class="header-title">Bright Horizon Academy</div>
+    <div class="header-icons">
+        <i class="fas fa-search" onclick="searchFunction()"></i> <!-- Search icon -->
+        <i class="fas fa-user" onclick="navigateTo('profile')"></i> <!-- Profile (user) icon -->
+    </div>
+</header>
+<nav>
+    <a href="#" onclick="navigateTo('home')">Home</a>
+    <a href="#" onclick="navigateTo('students')">Students</a>
+    <a href="#" onclick="navigateTo('teachers')">Teachers</a>
+    <a href="#" onclick="navigateTo('classes')">Classes</a>
+    <a href="#" onclick="navigateTo('exams')">Exams</a>
+</nav>
+<div class="marquee-container">
+    <marquee>Welcome to Bright Horizon Academy's Management System!</marquee>
+</div>
+<main id="content">
+    <!-- Dynamic content will be loaded here -->
+</main>
+<footer>
+    <p>&copy; 2024 Bright Horizon Academy. All rights reserved.</p>
+</footer>
+</body>
+</html>
