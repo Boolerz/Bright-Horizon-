@@ -14,8 +14,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
-
         /* Header styling */
         header {
             background-color: #003366;
@@ -124,6 +124,7 @@
             padding-top: 130px; /* Adjust to provide space below header and marquee */
             padding-bottom: 20px;
             margin-top: 0; /* Adjust to reduce any extra space */
+            flex: 1; /* This ensures that the main content grows to fill the space */
         } 
 
         h1 {
@@ -196,7 +197,7 @@
             color: white;
             text-align: center;
             padding: 8px 10px; /* Reduced padding to minimize footer height */
-            position: fixed;
+            position: relative;
             width: 100%;
             bottom: 0;
         }
@@ -220,9 +221,18 @@
             .form-section input[type="number"] {
                 width: 100px;
             }
+        .subtitle a.active {
+                font-weight: bold;
+                text-decoration: underline;
+            }
+        .loading {
+                background-color: #ccc; /* Greyed out color to show it's disabled */
+                cursor: not-allowed; /* Change the cursor to indicate it's not clickable */
+            }
+
         }
     </style>
-<script>
+<script> 
     // Function to navigate between pages
     function navigateTo(page) {
         const container = document.getElementById('content'); // Main content container
@@ -233,11 +243,10 @@
         } else if (page === 'students') {
             container.innerHTML = `<h2>Students page. This page is still under development. Please check back later.</h2>`;
         } else if (page === 'teachers') {
-            container.innerHTML = `<h2>Teacher's page, This page is still under development. Please check back later.</h2>`;
+            container.innerHTML = `<h2>Teacher's page. This page is still under development. Please check back later.</h2>`;
         } else if (page === 'classes') {
-            container.innerHTML = `<h2>Classes page, This page is still under development. Please check back later.</h2>`;
+            container.innerHTML = `<h2>Classes page. This page is still under development. Please check back later.</h2>`;
         } else if (page === 'exams') {
-            // Display subtitles for exam section
             container.innerHTML = `
                 <h2>Exam Section</h2>
                 <div class="subtitle">
@@ -288,10 +297,11 @@
                             <!-- Student rows will be dynamically added here -->
                         </table>
                         <button type="button" onclick="addStudentRow()">Add Student</button>
-                        <button type="button" onclick="submitForm()">Submit Marks</button>
+                        <button type="button" id="submitButton">Submit Marks</button>
                     </div>
                 </div>
             `;
+            document.getElementById('submitButton').addEventListener('click', submitForm);
         } else if (page === 'createExam') {
             container.innerHTML = `
                 <h2>Create Exam</h2>
@@ -308,7 +318,7 @@
                             <option value="Term 3">Term 3</option>
                         </select>
 
-                        <label for="class">Class:</label>
+                        <label for="examClass">Class:</label>
                         <select id="examClass" required>
                             <option value="">Select Class</option>
                             <option value="Form 1">Form 1</option>
@@ -320,10 +330,11 @@
                         <label for="examDate">Exam Date:</label>
                         <input type="date" id="examDate" required>
 
-                        <button type="button" onclick="createExam()">Create Exam</button>
+                        <button type="button" id="createExamButton">Create Exam</button>
                     </form>
                 </div>
             `;
+            document.getElementById('createExamButton').addEventListener('click', createExam);
         } else if (page === 'manageExam') {
             container.innerHTML = `
                 <h2>Manage Exam Reports</h2>
@@ -338,8 +349,8 @@
                             <option value="Form 4">Form 4</option>
                         </select>
 
-                        <label for="term">Term:</label>
-                        <select id="term" required>
+                        <label for="reportTerm">Term:</label>
+                        <select id="reportTerm" required>
                             <option value="">Select Term</option>
                             <option value="Term 1">Term 1</option>
                             <option value="Term 2">Term 2</option>
@@ -349,10 +360,11 @@
                         <label for="admissionNumber">Admission Number:</label>
                         <input type="text" id="admissionNumber" placeholder="Enter Admission Number" required>
 
-                        <button type="button" onclick="downloadReport()">Download Report Form</button>
+                        <button type="button" id="downloadReportButton">Download Report Form</button>
                     </form>
                 </div>
             `;
+            document.getElementById('downloadReportButton').addEventListener('click', downloadReport);
         }
     }
 
@@ -374,30 +386,87 @@
         row.parentNode.removeChild(row);
     }
 
-    // Function to submit the form
-    function submitForm() {
-        // Get class and subject values
-        const className = document.getElementById('class').value;
-        const subjectName = document.getElementById('subject').value;
+    // Function to submit the marks form with loading indicator on submit button
+   // Function to submit the marks form with loading indicator on submit button
+// Function to submit the marks form with overwrite check
+function submitForm() {
+    const className = document.getElementById('class').value;
+    const subjectName = document.getElementById('subject').value;
+    const submitButton = document.getElementById('submitButton');
 
-        // Get student marks
-        const table = document.getElementById('studentTable');
-        const rows = table.getElementsByTagName('tr');
-        const studentMarks = [];
+    if (!className || !subjectName) {
+        alert('Please select both class and subject.');
+        return;
+    }
 
-        for (let i = 1; i < rows.length; i++) {
-            const cells = rows[i].getElementsByTagName('td');
-            const admissionNumber = cells[0].getElementsByTagName('input')[0].value;
-            const marks = cells[1].getElementsByTagName('input')[0].value;
-            studentMarks.push({ admissionNumber, marks });
+    const table = document.getElementById('studentTable');
+    const rows = table.getElementsByTagName('tr');
+    const studentMarks = [];
+
+    for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        const admissionNumber = cells[0].getElementsByTagName('input')[0].value;
+        const marks = cells[1].getElementsByTagName('input')[0].value;
+
+        if (!admissionNumber || !marks) {
+            alert('Please fill in all admission numbers and marks.');
+            return;
         }
 
-        console.log("Class:", className);
-        console.log("Subject:", subjectName);
-        console.log("Student Marks:", studentMarks);
-
-        // Here you would typically send this data to the server
+        studentMarks.push({ admissionNumber, marks });
     }
+
+    // Disable the submit button and show loading
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span style="color: red;">Submitting...</span>'; // Change color to red during submission
+
+    // Check if marks already exist for any student
+    google.script.run.withSuccessHandler(function(exists) {
+        if (exists) {
+            const overwrite = confirm('Some students already have marks. Do you want to overwrite them?');
+
+            if (overwrite) {
+                // Overwrite the marks and send an email notification
+                google.script.run.withSuccessHandler(function(response) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Submit Marks'; // Reset button text
+                    alert(response); // Show success notification
+                }).withFailureHandler(function(error) {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Submit Marks'; // Reset button text
+                    alert('Failed to submit marks. Please try again.');
+                }).overwriteMarks({
+                    class: className,
+                    subject: subjectName,
+                    studentMarks: studentMarks
+                });
+            } else {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Submit Marks'; // Reset button text
+                alert('Submission cancelled.');
+            }
+        } else {
+            // Submit the marks normally if no marks exist
+            google.script.run.withSuccessHandler(function(response) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Submit Marks'; // Reset button text
+                alert(response); // Show success notification
+            }).withFailureHandler(function(error) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Submit Marks'; // Reset button text
+                alert('Failed to submit marks. Please try again.');
+            }).submitMarks({
+                class: className,
+                subject: subjectName,
+                studentMarks: studentMarks
+            });
+        }
+    }).checkMarksExist({
+        class: className,
+        subject: subjectName,
+        studentMarks: studentMarks
+    });
+}
 
     // Function to create an exam
     function createExam() {
@@ -407,23 +476,53 @@
         const examDate = document.getElementById('examDate').value;
 
         if (!examTitle || !term || !examClass || !examDate) {
-            alert('Please fill out all the fields.');
+            alert('Please fill in all fields.');
             return;
         }
 
-        // This is where you would handle the backend logic to create the exam
-        alert(`Creating exam:
-        Title: ${examTitle}
-        Term: ${term}
-        Class: ${examClass}
-        Date: ${examDate}`);
-
-        // You can add backend logic here for exam creation later.
+        // Simulate an API call to create an exam
+        google.script.run.withSuccessHandler(function(response) {
+            alert('Exam created successfully.');
+        }).withFailureHandler(function(error) {
+            alert('Failed to create exam. Please try again.');
+        }).createExam({
+            title: examTitle,
+            term: term,
+            class: examClass,
+            date: examDate
+        });
     }
 
-    // Initial navigation to home
-    window.onload = () => navigateTo('home');
+    // Function to download a report
+    function downloadReport() {
+        const reportClass = document.getElementById('reportClass').value;
+        const reportTerm = document.getElementById('reportTerm').value;
+        const admissionNumber = document.getElementById('admissionNumber').value;
+
+        if (!reportClass || !reportTerm || !admissionNumber) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        // Simulate an API call to download the report
+        google.script.run.withSuccessHandler(function(response) {
+            alert('Report downloaded successfully.');
+        }).withFailureHandler(function(error) {
+            alert('Failed to download report. Please try again.');
+        }).downloadReport({
+            class: reportClass,
+            term: reportTerm,
+            admissionNumber: admissionNumber
+        });
+    }
+
+    // Initialize the page with the home section
+    window.onload = function() {
+        navigateTo('home');
+    };
 </script>
+
+<div id="loadingIndicator" style="display: none;">Loading...</div>
 </head>
 <body>
 <header>
